@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="survey_not_found" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.survey_not_found</field>
+        <field name="value">¡Ups! El quiz con ID %s no existe.</field>
+    </record>
+    <record id="back_to_home" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.back_to_home</field>
+        <field name="value">Volver al inicio</field>
+    </record>
+    <record id="loading_questions" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.loading_questions</field>
+        <field name="value">¡Cargando preguntas...</field>
+    </record>
+    <record id="session_expired" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.session_expired</field>
+        <field name="value">sesión ha expirado</field>
+    </record>
+    <record id="login" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.login</field>
+        <field name="value">Iniciar sesión</field>
+    </record>
+    <record id="answers_count" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.answers_count</field>
+        <field name="value">%s Answers</field>
+    </record>
+    <record id="question_progress" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.question_progress</field>
+        <field name="value">Pregunta %s de %s</field>
+    </record>
+    <record id="timer_format" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.timer_format</field>
+        <field name="value">%ss</field>
+    </record>
+    <record id="loading_question" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.loading_question</field>
+        <field name="value">Cargando pregunta...</field>
+    </record>
+    <record id="icon_skipped" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.icon_skipped</field>
+        <field name="value">❓</field>
+    </record>
+    <record id="icon_correct" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.icon_correct</field>
+        <field name="value">✅</field>
+    </record>
+    <record id="icon_incorrect" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.icon_incorrect</field>
+        <field name="value">❌</field>
+    </record>
+    <record id="feedback_correct" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.feedback_correct</field>
+        <field name="value">¡Correcto! 🎉</field>
+    </record>
+    <record id="feedback_incorrect" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.feedback_incorrect</field>
+        <field name="value">Incorrecto ❌</field>
+    </record>
+    <record id="submit_error" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.submit_error</field>
+        <field name="value">Error al enviar la respuesta.</field>
+    </record>
+    <record id="submit_error_with_message" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.submit_error_with_message</field>
+        <field name="value">Error al enviar la respuesta: %s</field>
+    </record>
+    <record id="previous_button" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.previous_button</field>
+        <field name="value">Anterior</field>
+    </record>
+    <record id="next_button" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.next_button</field>
+        <field name="value">Siguiente</field>
+    </record>
+    <record id="invalid_token" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.invalid_token</field>
+        <field name="value">¡Token inválido! Por favor, ingresa un PIN válido.</field>
+    </record>
+    <record id="homepage_title" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.homepage_title</field>
+        <field name="value">¡Bienvenido a Ninja Quiz!</field>
+    </record>
+    <record id="homepage_paragraph" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.homepage_paragraph</field>
+        <field name="value">Participa en nuestro quiz y pon a prueba tus conocimientos.</field>
+    </record>
+    <record id="play_button" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.play_button</field>
+        <field name="value">¡Jugar ahora!</field>
+    </record>
+    <record id="play_page_title" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.play_page_title</field>
+        <field name="value">¡Ninja Quiz!</field>
+    </record>
+    <record id="footer_text" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.footer_text</field>
+        <field name="value">Crea tu propio Quiz como un Ninja</field>
+    </record>
+    <record id="layout_title" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.layout_title</field>
+        <field name="value">Ninja Quiz</field>
+    </record>
+    <record id="footer_copyright" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.footer_copyright</field>
+        <field name="value">© 2025 Ninja Quiz - Todos los derechos reservados.</field>
+    </record>
+    <record id="social_twitter" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.social_twitter</field>
+        <field name="value">Twitter</field>
+    </record>
+    <record id="social_facebook" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.social_facebook</field>
+        <field name="value">Facebook</field>
+    </record>
+    <record id="no_surveys_found" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.no_surveys_found</field>
+        <field name="value">No se encontraron encuestas.</field>
+    </record>
+    <record id="no_questions_found" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.no_questions_found</field>
+        <field name="value">No se encontramos preguntas para esta encuesta.</field>
+    </record>
+    <record id="feedback_config_error" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.feedback_config_error</field>
+        <field name="value">Error al cargar la configuración o las preguntas.</field>
+    </record>
+    <record id="feedback_no_questions" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.feedback_no_questions</field>
+        <field name="value">No hay preguntas disponibles.</field>
+    </record>
+    <record id="feedback_load_questions_error" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.feedback_load_questions_error</field>
+        <field name="value">Error al cargar las preguntas.</field>
+    </record>
+    <record id="feedback_submit_error" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.feedback_submit_error</field>
+        <field name="value">Error al enviar la respuesta.</field>
+    </record>
+</odoo>
