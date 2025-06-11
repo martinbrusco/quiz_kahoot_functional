@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="quiz_kahoot_functional.KahootSurveyRunnerTemplate" owl="1">
+        <div class="survey-runner">
+            <t t-if="state.configParamsLoaded">
+                </t>
+            <t t-else="">
+                <p>Cargando configuración...</p>
+            </t>
+        </div>
+    </t>
+</templates>

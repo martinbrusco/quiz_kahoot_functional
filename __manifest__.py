@@ -1,4 +1,3 @@
-
 {
     'name': 'Quiz Kahoot Engine',
     'description': 'Módulo funcional que provee la lógica para un quiz interactivo tipo Kahoot.',
@@ -14,12 +13,12 @@
     ],
     'assets': {
         'web.assets_frontend': [
-            'quiz_kahoot_functional/static/src/js/lib/SurveyDataService.js',
-            'quiz_kahoot_functional/static/src/js/lib/StateManager.js',
-            'quiz_kahoot_functional/static/src/js/kahoot_survey_runner.js',
-            'quiz_kahoot_functional/static/src/js/lib/mountComponent.js',
+            # Rutas simplificadas
+            'quiz_kahoot_functional/static/src/kahoot_runner.xml',
+            'quiz_kahoot_functional/static/src/SurveyDataService.js',
+            'quiz_kahoot_functional/static/src/kahoot_runner.js',
+            'quiz_kahoot_functional/static/src/mount.js',
         ],
-        'web.assets_backend': [],
     },
     'application': True,
     'installable': True,
