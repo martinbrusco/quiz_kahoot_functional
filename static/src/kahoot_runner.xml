@@ -3,9 +3,53 @@
     <t t-name="quiz_kahoot_functional.KahootSurveyRunnerTemplate" owl="1">
         <div class="survey-runner">
             <t t-if="state.configParamsLoaded">
+                <t t-if="!state.tokenValid">
+                    <p class="feedback-message incorrect" t-out="state.configParams.invalid_token || 'Token inválido.'"/>
+                    <a href="/" class="btn-subscribe" t-out="state.configParams.back_to_home || 'Volver'"/>
                 </t>
+                <t t-elif="!state.surveyExists">
+                    <p class="feedback-message" t-out="formatText('survey_not_found', state.surveyId)"/>
+                    <a href="/" class="btn-subscribe" t-out="state.configParams.back_to_home || 'Volver'"/>
+                </t>
+                <t t-elif="state.questions.length === 0">
+                    <p t-if="!state.feedbackMessage" t-out="state.configParams.loading_questions || 'Cargando...'"/>
+                    <p t-if="state.feedbackMessage" class="feedback-message" t-out="state.feedbackMessage"/>
+                </t>
+                <t t-else="">
+                    <div class="progress-general">
+                        <span t-out="formatText('question_progress', state.currentIndex + 1, state.questions.length)"/>
+                        <div class="progress-bar-general">
+                            <t t-foreach="state.questions" t-as="question" t-key="question.id">
+                                <div t-att-class="'progress-segment ' + getProgressClass(question, state.currentIndex, question_index)"/>
+                            </t>
+                        </div>
+                    </div>
+                    <div class="progress-timer">
+                        <span t-out="formatText('timer_format', state.timeLeft)"/>
+                    </div>
+                    <h3 class="question-title fade-in" t-key="state.currentIndex" t-out="state.currentQuestion ? state.currentQuestion.title : ''"/>
+                    <ul class="options-list fade-in" t-key="state.currentIndex">
+                        <t t-foreach="state.currentQuestion ? state.currentQuestion.options : []" t-as="option" t-key="option.id">
+                            <li t-att-class="'option-' + option_index">
+                                <button t-on-click.prevent="selectOption" t-att-data-option-id="option.id" class="option-button" t-att-disabled="state.selectedOption !== null">
+                                    <span class="option-shape"/>
+                                    <span class="option-text" t-out="option.text"/>
+                                </button>
+                            </li>
+                        </t>
+                    </ul>
+                    <t t-if="state.feedbackMessage">
+                        <p class="feedback-message" t-att-class="state.currentQuestion.correct ? 'correct' : 'incorrect'">
+                            <t t-out="state.feedbackMessage"/>
+                        </p>
+                        <t t-if="hasExplanation()">
+                            <p class="explanation" t-out="state.currentQuestion.explanation"/>
+                        </t>
+                    </t>
+                </t>
+            </t>
             <t t-else="">
-                <p>Cargando configuración...</p>
+                <p>Cargando componente...</p>
             </t>
         </div>
     </t>

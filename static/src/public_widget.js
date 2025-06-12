@@ -9,7 +9,6 @@ publicWidget.registry.KahootSurveyRunnerWidget = publicWidget.Widget.extend({
 
     async start() {
         await this._super(...arguments);
-        // Montamos el componente sin pasarle props.
         mount(KahootSurveyRunner, this.el);
     },
 });

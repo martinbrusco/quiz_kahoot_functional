@@ -13,9 +13,10 @@
     ],
     'assets': {
         'web.assets_frontend': [
-
+            'quiz_kahoot_functional/static/src/SurveyDataService.js',
             'quiz_kahoot_functional/static/src/kahoot_runner.js',
             'quiz_kahoot_functional/static/src/public_widget.js',
+            'quiz_kahoot_functional/static/src/kahoot_runner.xml',
         ],
     },
     'application': True,
