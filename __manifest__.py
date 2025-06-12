@@ -13,11 +13,9 @@
     ],
     'assets': {
         'web.assets_frontend': [
-            # Rutas simplificadas
-            'quiz_kahoot_functional/static/src/kahoot_runner.xml',
-            'quiz_kahoot_functional/static/src/SurveyDataService.js',
+
             'quiz_kahoot_functional/static/src/kahoot_runner.js',
-            'quiz_kahoot_functional/static/src/mount.js',
+            'quiz_kahoot_functional/static/src/public_widget.js',
         ],
     },
     'application': True,
