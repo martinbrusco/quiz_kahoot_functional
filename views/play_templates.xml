@@ -3,22 +3,13 @@
     <template id="play_page_template" name="Quiz Play Page">
         <t t-call="website.layout">
             <div id="wrap">
-                <div class="container py-5">
-                    <h1>Quiz Game</h1>
-                    <t t-if="token_valid">
-                        <div id="kahoot-survey-runner-placeholder"
-                             t-att-data-survey-id="survey_id"
-                             t-att-data-survey-exists="survey_exists"
-                             t-att-data-token="token">
-                             Cargando Quiz...
-                        </div>
-                    </t>
-                    <t t-else="">
-                        <div class="alert alert-danger">
-                            <p>Token inválido o la sesión ha expirado.</p>
-                            <a href="/" class="btn btn-primary">Volver al inicio</a>
-                        </div>
-                    </t>
+                <div id="kahoot-survey-runner-placeholder"
+                     t-att-data-survey-id="survey_id"
+                     t-att-data-survey-exists="survey_exists"
+                     t-att-data-token="token">
+                    <div class="d-flex justify-content-center align-items-center vh-100">
+                        <h2>Cargando Quiz...</h2>
+                    </div>
                 </div>
             </div>
         </t>

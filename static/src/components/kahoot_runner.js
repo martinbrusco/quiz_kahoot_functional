@@ -1,37 +1,15 @@
 /** @odoo-module */
 
-// Ya no necesitamos 'xml' aquí
-import { Component, useState, onMounted, onWillUnmount } from "@odoo/owl";
-import { SurveyDataService } from "./SurveyDataService";
+import { Component, onMounted, onWillUnmount } from "@odoo/owl";
+import { SurveyDataService } from "../services/SurveyDataService"; 
+import { TEMPLATE } from "./kahoot_template";
+import { getInitialState } from "./kahoot_state";
 
 export class KahootSurveyRunner extends Component {
-    // Apuntamos de nuevo al template externo
-    static template = "quiz_kahoot_functional.KahootSurveyRunnerTemplate";
+    static template = TEMPLATE;
     
-    // El resto del código (setup, loadQuestions, etc.) no cambia en absoluto.
-    // Pega aquí el resto del código funcional del paso anterior.
     setup() {
-        // El componente vuelve a leer los datos desde el DOM, como al principio.
-        const placeholder = document.getElementById("kahoot-survey-runner-placeholder");
-        
-        this.state = useState({
-            surveyId: parseInt(placeholder.dataset.surveyId, 10),
-            token: placeholder.dataset.token,
-            surveyExists: placeholder.dataset.surveyExists === 'true',
-            tokenValid: false,
-            questions: [],
-            currentQuestion: null,
-            currentIndex: 0,
-            selectedOption: null,
-            feedbackMessage: null,
-            timeLeft: 15,
-            isProcessing: false,
-            configParams: {},
-            configParamsLoaded: false,
-            feedbackTimeout: null,
-            questionTimeout: null,
-        });
-
+        this.state = getInitialState();
         this.dataService = new SurveyDataService();
         this.timer = null;
 
@@ -46,12 +24,16 @@ export class KahootSurveyRunner extends Component {
                     if (isTokenValid) {
                         await this.loadQuestions();
                         if (this.state.questions.length > 0) {
+                            this.renderInitialState();
                             this.startQuestionTimer();
+                        } else {
+                            this.state.feedbackMessage = this.state.configParams.feedback_no_questions || "No hay preguntas disponibles.";
                         }
                     }
                 }
             } catch (error) {
                 console.error("Error en la inicialización:", error);
+                this.state.feedbackMessage = this.state.configParams.feedback_load_questions_error || "Error al cargar las preguntas.";
             }
         });
 
@@ -66,10 +48,23 @@ export class KahootSurveyRunner extends Component {
             this.state.questions = questionsData.map(q => ({ ...q, answered: false, correct: false, skipped: false }));
             if (this.state.questions.length > 0) {
                 this.state.currentQuestion = this.state.questions[0];
+                this.state.currentIndex = 0;
+                this.state.feedbackMessage = null; // Eliminar mensaje de carga
             }
         } catch (error) {
             console.error("Error al cargar las preguntas:", error);
+            this.state.feedbackMessage = this.state.configParams.feedback_load_questions_error || "Error al cargar las preguntas.";
         }
+    }
+
+    renderInitialState() {
+        // Forzar renderizado inicial para reflejar el estado actual
+        this.state.questions.forEach((q, index) => {
+            if (index < this.state.currentIndex && q.answered) {
+                q.skipped = false; // Asegurar que el estado se refleje
+            }
+        });
+        this.render();
     }
 
     startQuestionTimer() {
@@ -78,6 +73,7 @@ export class KahootSurveyRunner extends Component {
         this.timer = setInterval(() => {
             if (this.state.timeLeft > 0) {
                 this.state.timeLeft--;
+                this.updateTimerBar();
             } else {
                 this.state.currentQuestion.skipped = true;
                 this.nextQuestion();
@@ -85,10 +81,29 @@ export class KahootSurveyRunner extends Component {
         }, 1000);
     }
 
+    updateTimerBar() {
+        if (this.$el) {
+            const progressFill = this.$el.querySelector('.progress-fill');
+            if (progressFill) {
+                const progress = (this.state.timeLeft / 15) * 100;
+                progressFill.style.width = `${progress}%`;
+            }
+        }
+    }
+
     clearTimers() {
-        if (this.timer) clearInterval(this.timer);
-        if (this.state.feedbackTimeout) clearTimeout(this.state.feedbackTimeout);
-        if (this.state.questionTimeout) clearTimeout(this.state.questionTimeout);
+        if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
+        if (this.state.feedbackTimeout) {
+            clearTimeout(this.state.feedbackTimeout);
+            this.state.feedbackTimeout = null;
+        }
+        if (this.state.questionTimeout) {
+            clearTimeout(this.state.questionTimeout);
+            this.state.questionTimeout = null;
+        }
     }
 
     async selectOption(ev) {
@@ -101,12 +116,22 @@ export class KahootSurveyRunner extends Component {
             if (response.success) {
                 this.state.currentQuestion.answered = true;
                 this.state.currentQuestion.correct = response.correct;
-                this.state.feedbackMessage = response.correct ? (this.state.configParams.feedback_correct || "¡Correcto!") : (this.state.configParams.feedback_incorrect || "Incorrecto");
+                this.state.feedbackMessage = response.correct ? this.state.configParams.feedback_correct || "¡Correcto!" : this.state.configParams.feedback_incorrect || "Incorrecto";
+                this.updateProgressBar(); // Actualizar la barra de progreso inmediatamente
                 this.state.feedbackTimeout = setTimeout(() => this.nextQuestion(), 2000);
             }
         } catch (error) {
             console.error("Error al enviar la respuesta:", error);
         }
+    }
+
+    updateProgressBar() {
+        this.state.questions.forEach((q, index) => {
+            if (index < this.state.currentIndex && q.answered) {
+                q.skipped = false; // Asegurar que el estado se refleje
+            }
+        });
+        this.render();
     }
 
     nextQuestion() {
@@ -118,6 +143,7 @@ export class KahootSurveyRunner extends Component {
             this.state.currentQuestion = this.state.questions[this.state.currentIndex];
             this.state.selectedOption = null;
             this.state.feedbackMessage = null;
+            this.updateProgressBar(); // Actualizar la barra antes de iniciar el temporizador
             this.startQuestionTimer();
         }
     }
@@ -136,5 +162,23 @@ export class KahootSurveyRunner extends Component {
         let text = (this.state.configParams && this.state.configParams[key]) || '';
         args.forEach(arg => text = text.replace('%s', arg));
         return text;
+    }
+
+    getIndicatorSymbol(question) {
+        if (question.answered) {
+            return question.correct ? '✅' : '❌';
+        }
+        return '❓';
+    }
+
+    getOptionClass(optionId) {
+        if (this.state.selectedOption === optionId) {
+            return 'selected';
+        }
+        return '';
+    }
+
+    isOptionDisabled() {
+        return this.state.selectedOption !== null;
     }
 }
