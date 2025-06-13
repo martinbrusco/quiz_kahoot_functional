@@ -55,14 +55,22 @@ export const TEMPLATE = xml`
                     </t>
                 </ul>
                 <t t-if="state.feedbackMessage">
-                    <p class="feedback-message" t-att-class="state.feedbackMessage.includes(state.configParams.feedback_correct) ? 'correct' : 'incorrect'">
-                        <t t-out="state.feedbackMessage"/>
-                    </p>
+
                     <t t-if="hasExplanation()">
                         <p class="explanation">
                             <t t-out="state.currentQuestion.explanation"/>
                         </p>
                     </t>
+
+
+
+
+                    <p class="feedback-message" t-att-class="state.feedbackMessage.includes(state.configParams.feedback_correct) ? 'correct' : 'incorrect'">
+                        <t t-out="state.feedbackMessage"/>
+                    </p>
+
+
+
                 </t>
             </t>
         </t>

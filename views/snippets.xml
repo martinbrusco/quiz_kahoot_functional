@@ -35,7 +35,7 @@
                      t-att-data-survey-exists="survey_exists"
                      t-att-data-token="token">
                     <div class="d-flex justify-content-center align-items-center">
-                        <h3>Cargando Quiz...</h3>
+                        <!-- <h3>Cargando Quiz...</h3> -->
                     </div>
                 </div>
             </div>
