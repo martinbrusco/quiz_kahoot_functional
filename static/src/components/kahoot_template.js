@@ -32,7 +32,7 @@ export const TEMPLATE = xml`
                     <div class="progress-bar-general">
                         <t t-foreach="state.questions" t-as="question" t-key="question.id">
                             <div t-att-class="'progress-segment ' + getProgressClass(question, state.currentIndex, question_index)">
-                                <span class="answered-icon" t-out="getIndicatorSymbol(question)"/>
+                                <span class="answered-icon" t-out="getIndicatorSymbol(question, question_index)"/>
                             </div>
                         </t>
                     </div>

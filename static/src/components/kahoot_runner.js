@@ -156,6 +156,7 @@ export class KahootSurveyRunner extends Component {
         if (this.state.currentIndex >= this.state.questions.length - 1) {
             this.state.feedbackMessage = this.state.configParams.quiz_finished || "Fin del Quiz";
             this.clearTimers();
+            this.state.isQuizFinished = true; // Marca el quiz como terminado
         } else {
             this.state.currentIndex++;
             this.state.currentQuestion = this.state.questions[this.state.currentIndex];
@@ -165,6 +166,7 @@ export class KahootSurveyRunner extends Component {
             this.updateProgressBar();
             this.startQuestionTimer();
         }
+        this.render(); // Forzar renderizado para actualizar la barra de progreso
     }
 
     getProgressClass(question, currentIndex, index) {
@@ -183,11 +185,15 @@ export class KahootSurveyRunner extends Component {
         return text;
     }
 
-    getIndicatorSymbol(question) {
-        if (question.answered) {
-            return question.correct ? this.state.configParams.icon_correct || '✅' : this.state.configParams.icon_incorrect || '❌';
+    getIndicatorSymbol(question, question_index) {
+        if (this.state.currentIndex > question_index || (this.state.isQuizFinished && question_index < this.state.questions.length)) {
+            if (question.answered) {
+                return question.correct ? this.state.configParams.icon_correct || '✅' : this.state.configParams.icon_incorrect || '❌';
+            } else if (question.skipped) {
+                return this.state.configParams.icon_skipped || '❓';
+            }
         }
-        return this.state.configParams.icon_skipped || '❓';
+        return ''; // No mostrar símbolos hasta que se avance
     }
 
     getOptionClass(optionId) {
@@ -198,6 +204,6 @@ export class KahootSurveyRunner extends Component {
     }
 
     isOptionDisabled() {
-        return this.state.selectedOption !== null || this.state.isProcessing;
+        return this.state.selectedOption !== null || this.state.isProcessing || (this.state.isQuizFinished && this.state.currentIndex === this.state.questions.length - 1);
     }
 }
