@@ -18,6 +18,7 @@ export class KahootSurveyRunner extends Component {
                 const configParams = await this.dataService.getConfigParams();
                 this.state.configParams = configParams;
                 this.state.configParamsLoaded = true;
+                this.state.timerDuration = parseInt(configParams.timer_duration || 15);
                 if (this.state.surveyExists && this.state.token) {
                     const isTokenValid = await this.dataService.validateToken(this.state.surveyId, this.state.token);
                     this.state.tokenValid = isTokenValid;
@@ -49,7 +50,7 @@ export class KahootSurveyRunner extends Component {
             if (this.state.questions.length > 0) {
                 this.state.currentQuestion = this.state.questions[0];
                 this.state.currentIndex = 0;
-                this.state.feedbackMessage = null; // Eliminar mensaje de carga
+                this.state.feedbackMessage = null;
             }
         } catch (error) {
             console.error("Error al cargar las preguntas:", error);
@@ -58,10 +59,9 @@ export class KahootSurveyRunner extends Component {
     }
 
     renderInitialState() {
-        // Forzar renderizado inicial para reflejar el estado actual
         this.state.questions.forEach((q, index) => {
             if (index < this.state.currentIndex && q.answered) {
-                q.skipped = false; // Asegurar que el estado se refleje
+                q.skipped = false;
             }
         });
         this.render();
@@ -69,14 +69,16 @@ export class KahootSurveyRunner extends Component {
 
     startQuestionTimer() {
         this.clearTimers();
-        this.state.timeLeft = 15;
+        this.state.timeLeft = this.state.timerDuration;
+        this.updateTimerBar();
         this.timer = setInterval(() => {
             if (this.state.timeLeft > 0) {
                 this.state.timeLeft--;
                 this.updateTimerBar();
             } else {
                 this.state.currentQuestion.skipped = true;
-                this.nextQuestion();
+                this.state.feedbackMessage = this.state.configParams.feedback_skipped || "¡Tiempo agotado!";
+                this.state.feedbackTimeout = setTimeout(() => this.nextQuestion(), 1000);
             }
         }, 1000);
     }
@@ -85,8 +87,15 @@ export class KahootSurveyRunner extends Component {
         if (this.$el) {
             const progressFill = this.$el.querySelector('.progress-fill');
             if (progressFill) {
-                const progress = (this.state.timeLeft / 15) * 100;
+                const progress = (this.state.timeLeft / this.state.timerDuration) * 100;
                 progressFill.style.width = `${progress}%`;
+                if (this.state.timeLeft <= this.state.timerDuration / 3) {
+                    progressFill.style.backgroundColor = '#ff4d4d'; // Rojo
+                } else if (this.state.timeLeft <= this.state.timerDuration * 2 / 3) {
+                    progressFill.style.backgroundColor = '#ffcc00'; // Amarillo
+                } else {
+                    progressFill.style.backgroundColor = '#28a745'; // Verde
+                }
             }
         }
     }
@@ -107,7 +116,8 @@ export class KahootSurveyRunner extends Component {
     }
 
     async selectOption(ev) {
-        if (this.state.selectedOption !== null) return;
+        if (this.state.selectedOption !== null || this.state.isProcessing) return;
+        this.state.isProcessing = true;
         this.clearTimers();
         const optionId = parseInt(ev.currentTarget.dataset.optionId, 10);
         this.state.selectedOption = optionId;
@@ -117,18 +127,26 @@ export class KahootSurveyRunner extends Component {
                 this.state.currentQuestion.answered = true;
                 this.state.currentQuestion.correct = response.correct;
                 this.state.feedbackMessage = response.correct ? this.state.configParams.feedback_correct || "¡Correcto!" : this.state.configParams.feedback_incorrect || "Incorrecto";
-                this.updateProgressBar(); // Actualizar la barra de progreso inmediatamente
-                this.state.feedbackTimeout = setTimeout(() => this.nextQuestion(), 2000);
+                this.updateProgressBar();
+                this.state.feedbackTimeout = setTimeout(() => {
+                    this.nextQuestion();
+                    this.state.isProcessing = false;
+                }, 2000);
+            } else {
+                this.state.feedbackMessage = this.state.configParams.feedback_submit_error || "Error al enviar la respuesta.";
+                this.state.isProcessing = false;
             }
         } catch (error) {
             console.error("Error al enviar la respuesta:", error);
+            this.state.feedbackMessage = this.state.configParams.feedback_submit_error || "Error al enviar la respuesta.";
+            this.state.isProcessing = false;
         }
     }
 
     updateProgressBar() {
         this.state.questions.forEach((q, index) => {
             if (index < this.state.currentIndex && q.answered) {
-                q.skipped = false; // Asegurar que el estado se refleje
+                q.skipped = false;
             }
         });
         this.render();
@@ -136,14 +154,15 @@ export class KahootSurveyRunner extends Component {
 
     nextQuestion() {
         if (this.state.currentIndex >= this.state.questions.length - 1) {
-            this.state.feedbackMessage = "Fin del Quiz";
+            this.state.feedbackMessage = this.state.configParams.quiz_finished || "Fin del Quiz";
             this.clearTimers();
         } else {
             this.state.currentIndex++;
             this.state.currentQuestion = this.state.questions[this.state.currentIndex];
             this.state.selectedOption = null;
             this.state.feedbackMessage = null;
-            this.updateProgressBar(); // Actualizar la barra antes de iniciar el temporizador
+            this.state.isProcessing = false;
+            this.updateProgressBar();
             this.startQuestionTimer();
         }
     }
@@ -166,9 +185,9 @@ export class KahootSurveyRunner extends Component {
 
     getIndicatorSymbol(question) {
         if (question.answered) {
-            return question.correct ? '✅' : '❌';
+            return question.correct ? this.state.configParams.icon_correct || '✅' : this.state.configParams.icon_incorrect || '❌';
         }
-        return '❓';
+        return this.state.configParams.icon_skipped || '❓';
     }
 
     getOptionClass(optionId) {
@@ -179,6 +198,6 @@ export class KahootSurveyRunner extends Component {
     }
 
     isOptionDisabled() {
-        return this.state.selectedOption !== null;
+        return this.state.selectedOption !== null || this.state.isProcessing;
     }
 }

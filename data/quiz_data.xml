@@ -136,4 +136,16 @@
         <field name="key">theme_ninja_quiz.feedback_submit_error</field>
         <field name="value">Error al enviar la respuesta.</field>
     </record>
+    <record id="timer_duration" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.timer_duration</field>
+        <field name="value">15</field>
+    </record>
+    <record id="feedback_skipped" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.feedback_skipped</field>
+        <field name="value">¡Tiempo agotado!</field>
+    </record>
+    <record id="quiz_finished" model="ir.config_parameter">
+        <field name="key">theme_ninja_quiz.quiz_finished</field>
+        <field name="value">Fin del Quiz</field>
+    </record>
 </odoo>

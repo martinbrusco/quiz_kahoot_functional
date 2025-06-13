@@ -16,6 +16,7 @@ export function getInitialState() {
         selectedOption: null,
         feedbackMessage: null,
         timeLeft: 15,
+        timerDuration: 15,
         isProcessing: false,
         configParams: {},
         configParamsLoaded: false,

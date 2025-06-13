@@ -39,8 +39,8 @@ export const TEMPLATE = xml`
                 </div>
                 <div class="progress-timer">
                     <span t-out="formatText('timer_format', state.timeLeft)"/>
-                    <div class="progress-bar">
-                        <div class="progress-fill" t-att-style="'width:' + (state.timeLeft / 15 * 100) + '%'"/>
+                    <div class="progress-bar timer-bar">
+                        <div class="progress-fill" t-att-style="'width:' + (state.timeLeft / state.timerDuration * 100) + '%'"/>
                     </div>
                 </div>
                 <h3 class="question-title fade-in" t-key="state.currentIndex" t-out="state.currentQuestion ? state.currentQuestion.title : state.configParams.loading_question || 'Cargando pregunta...'"/>
@@ -55,22 +55,14 @@ export const TEMPLATE = xml`
                     </t>
                 </ul>
                 <t t-if="state.feedbackMessage">
-
                     <t t-if="hasExplanation()">
                         <p class="explanation">
                             <t t-out="state.currentQuestion.explanation"/>
                         </p>
                     </t>
-
-
-
-
                     <p class="feedback-message" t-att-class="state.feedbackMessage.includes(state.configParams.feedback_correct) ? 'correct' : 'incorrect'">
                         <t t-out="state.feedbackMessage"/>
                     </p>
-
-
-
                 </t>
             </t>
         </t>

@@ -61,10 +61,20 @@ export class SurveyDataService {
 
     async getConfigParams() {
         try {
-            return await jsonrpc("/survey/get_config_params");
+            const params = await jsonrpc("/survey/get_config_params");
+            return {
+                ...params,
+                timer_duration: parseInt(params.timer_duration) || 15,
+                feedback_skipped: params.feedback_skipped || '¡Tiempo agotado!',
+                quiz_finished: params.quiz_finished || 'Fin del Quiz'
+            };
         } catch (error) {
             console.error("Error loading config params:", error);
-            return {};
+            return {
+                timer_duration: 15,
+                feedback_skipped: '¡Tiempo agotado!',
+                quiz_finished: 'Fin del Quiz'
+            };
         }
     }
 }
